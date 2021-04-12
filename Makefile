@@ -42,9 +42,10 @@ $(BLD)main.lst: $(BLD)main.elf
 $(BLD)main.elf: $(BLD)main.o $(BLD)startup.o $(BLD)temp.o $(BLD)lcdpar.o $(BLD)malloc.o  
 $(BLD)main.elf: $(BLD)freertos/queue.o $(BLD)freertos/list.o $(BLD)freertos/timers.o
 $(BLD)main.elf: $(BLD)freertos/heap_2.o $(BLD)freertos/tasks.o $(BLD)freertos/port.o
+$(BLD)main.elf: $(BLD)dht22.o $(BLD)timer.o
 	$(CC) -o $(BLD)main.elf -T$(LIB)stm32f103.ld $(BLD)startup.o $(BLD)main.o $(BLD)temp.o $(BLD)malloc.o \
 	$(BLD)freertos/tasks.o $(BLD)freertos/heap_2.o $(BLD)freertos/timers.o $(BLD)freertos/list.o \
-	$(BLD)freertos/port.o $(BLD)freertos/queue.o $(BLD)lcdpar.o \
+	$(BLD)freertos/port.o $(BLD)freertos/queue.o $(BLD)lcdpar.o $(BLD)dht22.o $(BLD)timer.o \
 	-I$(LIB) -I$(FRH) $(LCPPFLAGS)
 	arm-none-eabi-size $(BLD)main.elf
 $(BLD)startup.o: $(LIB)startup.cpp
@@ -71,6 +72,10 @@ $(BLD)temp.o: $(SRC)temp.cpp
 	$(CC) $(SRC)temp.cpp -o $(BLD)temp.o -I$(INC) $(CPPFLAGS)	
 $(BLD)lcdpar.o: $(SRC)lcdpar.cpp
 	$(CC) $(SRC)lcdpar.cpp -o $(BLD)lcdpar.o -I$(INC) -I$(LIB) $(CPPFLAGS)
+$(BLD)timer.o: $(SRC)timer.cpp
+	$(CC) $(SRC)timer.cpp -o $(BLD)timer.o -I$(INC) -I$(LIB) -I$(FRH) $(CPPFLAGS)
+$(BLD)dht22.o: $(SRC)dht22.cpp
+	$(CC) $(SRC)dht22.cpp -o $(BLD)dht22.o -I$(INC) -I$(LIB) -I$(FRH) $(CPPFLAGS)		
 	
 clean:
 	rm -rf $(BLD)*.o $(BLD)freertos/*.o $(BLD)*.elf $(BLD)*.lst $(BLD)*.bin $(BLD)*.map 

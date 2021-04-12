@@ -1,7 +1,8 @@
 #ifndef IRQ_H_
 #define IRQ_H_
 
-#include "main.h"
+#include "stm32f10x.h"
+//#include "main.h"
 
 //void(*IsrVectors[42])();
 //void AddHandler(void (*IsrVectors[41])(),IRQn y)
@@ -42,7 +43,7 @@ public:
     {
         for(uint8_t i=0;i<10;i++)
         {
-            if(ArrOffInterrupteClasses[i]!=NULL)
+            if(ArrOffInterrupteClasses[i]!=nullptr)
             {
                 ArrOffInterrupteClasses[i]->InterruptHandle();
             }
@@ -53,7 +54,7 @@ public:
     {
         for(uint8_t i=0;i<10;i++)
         {
-            if(ArrOffInterrupteClasses[i]==NULL)
+            if(ArrOffInterrupteClasses[i]==nullptr)
             {
                 ArrOffInterrupteClasses[i]=pInterrupt;
                 break;
@@ -66,7 +67,7 @@ public:
         {
             if(ArrOffInterrupteClasses[i]==pInterrupt)
             {
-                ArrOffInterrupteClasses[i]=NULL;
+                ArrOffInterrupteClasses[i]=nullptr;
                 break;
             }
         }
@@ -75,7 +76,7 @@ private:
     static Interruptable* ArrOffInterrupteClasses[10];
 };
 template <IRQn_Type irqN>
-Interruptable* InterruptSubject<irqN>::ArrOffInterrupteClasses[10]={NULL};
+Interruptable* InterruptSubject<irqN>::ArrOffInterrupteClasses[10]={nullptr};
 
 //-----------------  example classes -----------------------------------------
 class Blink10
@@ -87,7 +88,7 @@ public:
     void setActiveIrq(void) {pThis=this;}
     void InterruptHandle()
     {
-        InterruptManager::AddHandler(Blink10::setFunc1,TIM2_IRQn);
+        //InterruptManager::AddHandler(Blink10::setFunc1,TIM2_IRQn);
 	    InterruptManager::AddHandler(Blink10::setFunc2,TIM3_IRQn);
     }
 private:

@@ -58,12 +58,17 @@ int main() {
 	heap_fill_zeroes();
 	Timer* tim4 = new Timer(4);
 	Blink* bl = new Blink;
+	
 	InterruptSubject<TIM4_IRQn>* mig = new InterruptSubject<TIM4_IRQn>;
+	
 	mig->setInterrupt(bl);
 	mig->SetVector();	
+	
 	Display* disp = new Display;
+	DHT22_FR* dht_FR = new DHT22_FR;
 	//AdcTemp* temp = new AdcTemp;
 	OS::taskCreate(disp,"LCD",1000,1);
+	OS::taskCreate(dht_FR, "DHT",1000,2);
 	//OS::taskCreate(temp,"TEMP",400,2);
 	__enable_irq();
 	OS::startScheduler();	

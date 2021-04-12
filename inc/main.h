@@ -21,6 +21,7 @@
 #include "irq.h"
 #include "lcdpar.h"
 #include "adc.h"
+#include "dht22.h"
 
 
 

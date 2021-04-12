@@ -8,7 +8,7 @@
 #include "queue.h"
 #include "timers.h"
 #include "portmacro.h"
-#include "main.h"
+//#include "main.h"
 
 class iTaskFR
 {
@@ -46,7 +46,22 @@ public:
     static void deleteSemaphore(SemaphoreHandle_t handle)
     {vSemaphoreDelete(handle);}
 /********************************- critical section -********************************************/
-
+    static void scheduler_suspend() {
+        vTaskSuspendAll();
+    }
+    static void scheduler_resume() {
+        xTaskResumeAll();
+    }
+    static void criticalSectionEnter()
+    {taskENTER_CRITICAL();} // prohibition interrupts and sysTick    
+    static void criticalSectionLeave()
+    {taskEXIT_CRITICAL();}
+    static void criticalSectionEnterISR()
+    {taskENTER_CRITICAL_FROM_ISR(); vTaskSuspendAll();}
+    static void criticalSectionLeaveISR(uint32_t x)
+    {taskEXIT_CRITICAL_FROM_ISR(x);}
+    static void stopScheduller(){vTaskSuspendAll();}
+    static void newStartScheduller(){xTaskResumeAll();}
 /********************************- scheduller -**************************************************/
     static void startScheduler()
     {vTaskStartScheduler();}

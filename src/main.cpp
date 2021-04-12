@@ -26,33 +26,31 @@ public:
         }
     }
 };
-class Display: public iTaskFR
-{
+class Display: public iTaskFR {
 public:
 	Display(){}		
 	void run() override // task creation
 	{
 		LcdParIni lcd;
-		Font_16x16 font;
+		Font_30x40 font;
 		uint32_t x=0;
 		uint32_t x1=0;
 		float y=0;
 		while(1)
 		{
 			x1++;
-			font.intToChar(x1);
-			font.print(20,20,0x00ff,font.arr,9);
+			font.setTemperature(x1/1.1F);
+			font.drawTemperature();
 			queue1.queueRecieve(x,10);
 			y=*reinterpret_cast<float*>(&x);
-			font.floatTochar(y);
-			font.print(20,50,0xffff,font.arrFloat,5);			
+			font.setHumidity(y*1.F);
+			font.drawHumidity();
 			OS::sleep(300);
 		}
 	}
 };
 
-int main()
-{	
+int main() {	
 	uint32_t* x = new uint32_t;
 	*x=0x12345678;	
 	gpioc_ini();
@@ -64,16 +62,15 @@ int main()
 	mig->setInterrupt(bl);
 	mig->SetVector();	
 	Display* disp = new Display;
-	AdcTemp* temp = new AdcTemp;
+	//AdcTemp* temp = new AdcTemp;
 	OS::taskCreate(disp,"LCD",1000,1);
-	OS::taskCreate(temp,"TEMP",400,2);
+	//OS::taskCreate(temp,"TEMP",400,2);
 	__enable_irq();
 	OS::startScheduler();	
 	
-	while(1)
-	{		
+	while(1) {		
 		GPIOC->ODR^=GPIO_ODR_ODR13;	
-		for(uint32_t i=0;i<72000;i++){}		
+		for(uint32_t i=0;i<7200;i++){}		
 	}		
     return 0;
 }

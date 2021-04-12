@@ -201,5 +201,9 @@ void __attribute__((naked,noreturn)) Reset_Handler()
 	__libc_init_array(); 
     main();    
 }
-void __attribute__((naked,noreturn)) Default_Handler() // naked its with no input and output parameters
+void Default_Handler() // naked its with no input and output parameters
 {while(1);}
+
+void Hardfault_Handler() {
+	while(1);
+}

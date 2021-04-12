@@ -8,6 +8,7 @@ LD = arm-none-eabi-ld
 
 TARGET = src/main.cpp
 INC = inc/
+SRC = src/
 LIB = lib/
 BLD = build/
 FRS = freeRTOS/src/
@@ -38,12 +39,12 @@ $(BLD)main.bin: $(BLD)main.elf
 	$(OBJC) $(BLD)main.elf $(BLD)main.bin -O binary
 $(BLD)main.lst: $(BLD)main.elf
 	$(OBJD) -D $(BLD)main.elf > $(BLD)main.lst
-$(BLD)main.elf: $(BLD)main.o $(BLD)startup.o $(BLD)malloc.o $(BLD)freertos/tasks.o $(BLD)freertos/port.o
+$(BLD)main.elf: $(BLD)main.o $(BLD)startup.o $(BLD)temp.o $(BLD)lcdpar.o $(BLD)malloc.o  
 $(BLD)main.elf: $(BLD)freertos/queue.o $(BLD)freertos/list.o $(BLD)freertos/timers.o
-$(BLD)main.elf: $(BLD)freertos/heap_2.o
-	$(CC) -o $(BLD)main.elf -T$(LIB)stm32f103.ld $(BLD)startup.o $(BLD)main.o $(BLD)malloc.o \
+$(BLD)main.elf: $(BLD)freertos/heap_2.o $(BLD)freertos/tasks.o $(BLD)freertos/port.o
+	$(CC) -o $(BLD)main.elf -T$(LIB)stm32f103.ld $(BLD)startup.o $(BLD)main.o $(BLD)temp.o $(BLD)malloc.o \
 	$(BLD)freertos/tasks.o $(BLD)freertos/heap_2.o $(BLD)freertos/timers.o $(BLD)freertos/list.o \
-	$(BLD)freertos/port.o $(BLD)freertos/queue.o \
+	$(BLD)freertos/port.o $(BLD)freertos/queue.o $(BLD)lcdpar.o \
 	-I$(LIB) -I$(FRH) $(LCPPFLAGS)
 	arm-none-eabi-size $(BLD)main.elf
 $(BLD)startup.o: $(LIB)startup.cpp
@@ -66,6 +67,10 @@ $(BLD)freertos/heap_2.o: freeRTOS/src/heap_2.c
 	
 $(BLD)main.o: $(TARGET)
 	$(CC) $(TARGET) -o $(BLD)main.o -I$(INC) -I$(LIB) -I$(FRH) $(CPPFLAGS)
+$(BLD)temp.o: $(SRC)temp.cpp
+	$(CC) $(SRC)temp.cpp -o $(BLD)temp.o -I$(INC) $(CPPFLAGS)	
+$(BLD)lcdpar.o: $(SRC)lcdpar.cpp
+	$(CC) $(SRC)lcdpar.cpp -o $(BLD)lcdpar.o -I$(INC) -I$(LIB) $(CPPFLAGS)
 	
 clean:
 	rm -rf $(BLD)*.o $(BLD)freertos/*.o $(BLD)*.elf $(BLD)*.lst $(BLD)*.bin $(BLD)*.map 

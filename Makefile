@@ -1,4 +1,4 @@
-.PHONY: all,clean,load
+.PHONY: all clean load
 
 CC = arm-none-eabi-gcc
 OBJC = arm-none-eabi-objcopy
@@ -9,6 +9,7 @@ LD = arm-none-eabi-ld
 TARGET = src/main.cpp
 INC = inc/
 LIB = lib/
+BLD = build/
 FRS = freeRTOS/src/
 FRH = freeRTOS/inc/
 
@@ -23,46 +24,48 @@ LCPPFLAGS = -mcpu=cortex-m3 -mthumb -nostartfiles -lm -lc -lgcc \
 		 -specs=nano.specs -specs=nosys.specs -fno-exceptions -fno-rtti \
 		 -u_printf_float -mfloat-abi=soft -fno-use-cxa-atexit \
 		 -L/usr/lib/arm-none-eabi/newlib/thumb/v7-m/ -L/usr/lib/arm-none-eabi/newlib/ \
-		 	-Xlinker -Map=main.map -z muldefs 
+		 	-Xlinker -Map=$(BLD)main.map -z muldefs 
 LDFLAGS =  -marmelf --gc-sections -lgcc -lm -lc \
 	-L/usr/lib/gcc/arm-none-eabi/7.3.1/ -L/usr/lib/gcc/arm-none-eabi/7.3.1/thumb/v7-m/
 	
-load: main.bin
-	st-flash write main.bin 0x08000000
+load: $(BLD)main.bin
+	openocd -f lib/stlink.cfg -f lib/stm32f1x.cfg -c "program $(BLD)main.bin \
+	verify exit reset 0x08000000"
+	//st-flash write main.bin 0x08000000
 
-all: main.bin main.elf main.lst
-main.bin: main.elf
-	$(OBJC) main.elf main.bin -O binary
-main.lst: main.elf
-	$(OBJD) -D main.elf > main.lst
-main.elf: startup.o malloc.o tasks.o port.o queue.o list.o timers.o heap_2.o main.o
-	$(CC) -o main.elf -T$(LIB)stm32f103.ld startup.o malloc.o \
-	tasks.o heap_2.o timers.o list.o port.o queue.o main.o \
+all: $(BLD)main.bin $(BLD)main.elf $(BLD)main.lst
+$(BLD)main.bin: $(BLD)main.elf
+	$(OBJC) $(BLD)main.elf $(BLD)main.bin -O binary
+$(BLD)main.lst: $(BLD)main.elf
+	$(OBJD) -D $(BLD)main.elf > $(BLD)main.lst
+$(BLD)main.elf: $(BLD)main.o $(BLD)startup.o $(BLD)malloc.o $(BLD)freertos/tasks.o $(BLD)freertos/port.o
+$(BLD)main.elf: $(BLD)freertos/queue.o $(BLD)freertos/list.o $(BLD)freertos/timers.o
+$(BLD)main.elf: $(BLD)freertos/heap_2.o
+	$(CC) -o $(BLD)main.elf -T$(LIB)stm32f103.ld $(BLD)startup.o $(BLD)main.o $(BLD)malloc.o \
+	$(BLD)freertos/tasks.o $(BLD)freertos/heap_2.o $(BLD)freertos/timers.o $(BLD)freertos/list.o \
+	$(BLD)freertos/port.o $(BLD)freertos/queue.o \
 	-I$(LIB) -I$(FRH) $(LCPPFLAGS)
-	arm-none-eabi-size main.elf
-startup.o: $(LIB)startup.cpp
-	$(CC) $(LIB)startup.cpp -o startup.o $(CPPFLAGS)
-malloc.o: src/malloc.cpp
-	$(CC) src/malloc.cpp -o malloc.o -I$(INC) -I$(FRH) $(CPPFLAGS)
+	arm-none-eabi-size $(BLD)main.elf
+$(BLD)startup.o: $(LIB)startup.cpp
+	$(CC) $(LIB)startup.cpp -o $(BLD)startup.o $(CPPFLAGS)
+$(BLD)malloc.o: src/malloc.cpp
+	$(CC) src/malloc.cpp -o $(BLD)malloc.o -I$(INC) -I$(FRH) $(CPPFLAGS)
 	
-port.o: freeRTOS/src/port.c 
-	$(CC) freeRTOS/src/port.c -o port.o -I$(FRH) -I$(INC) $(CFLAGS)
-tasks.o: freeRTOS/src/tasks.c
-	$(CC) freeRTOS/src/tasks.c -o tasks.o -I$(FRH) -I$(INC) $(CFLAGS)
-queue.o: freeRTOS/src/queue.c
-	$(CC) freeRTOS/src/queue.c -o queue.o -I$(FRH) -I$(INC) $(CFLAGS)	
-list.o: freeRTOS/src/list.c
-	$(CC) freeRTOS/src/list.c -o list.o -I$(FRH) -I$(INC) $(CFLAGS)	
-timers.o: freeRTOS/src/timers.c
-	$(CC) freeRTOS/src/timers.c -o timers.o -I$(FRH) -I$(INC) $(CFLAGS)	
-heap_2.o: freeRTOS/src/heap_2.c $(INC)
-	$(CC) freeRTOS/src/heap_2.c -o heap_2.o -I$(FRH) -I$(INC) $(CFLAGS)	
+$(BLD)freertos/port.o: freeRTOS/src/port.c 
+	$(CC) freeRTOS/src/port.c -o $(BLD)freertos/port.o -I$(FRH) -I$(INC) $(CFLAGS)
+$(BLD)freertos/tasks.o: freeRTOS/src/tasks.c
+	$(CC) freeRTOS/src/tasks.c -o $(BLD)freertos/tasks.o -I$(FRH) -I$(INC) $(CFLAGS)
+$(BLD)freertos/queue.o: freeRTOS/src/queue.c
+	$(CC) freeRTOS/src/queue.c -o $(BLD)freertos/queue.o -I$(FRH) -I$(INC) $(CFLAGS)	
+$(BLD)freertos/list.o: freeRTOS/src/list.c
+	$(CC) freeRTOS/src/list.c -o $(BLD)freertos/list.o -I$(FRH) -I$(INC) $(CFLAGS)	
+$(BLD)freertos/timers.o: freeRTOS/src/timers.c
+	$(CC) freeRTOS/src/timers.c -o $(BLD)freertos/timers.o -I$(FRH) -I$(INC) $(CFLAGS)	
+$(BLD)freertos/heap_2.o: freeRTOS/src/heap_2.c
+	$(CC) freeRTOS/src/heap_2.c -o $(BLD)freertos/heap_2.o -I$(FRH) -I$(INC) $(CFLAGS)	
 	
-main.o: $(TARGET) $(INC) $(FRH)
-	$(CC) $(TARGET) -o main.o -I$(INC) -I$(LIB) -I$(FRH) $(CPPFLAGS)
+$(BLD)main.o: $(TARGET)
+	$(CC) $(TARGET) -o $(BLD)main.o -I$(INC) -I$(LIB) -I$(FRH) $(CPPFLAGS)
 	
 clean:
-	rm -rf *.o *.elf *.lst *.bin *.map 
-
-
-	
+	rm -rf $(BLD)*.o $(BLD)freertos/*.o $(BLD)*.elf $(BLD)*.lst $(BLD)*.bin $(BLD)*.map 

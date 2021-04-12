@@ -189,7 +189,7 @@ __libc_fini_array (void)
 extern void* _sidata, *_sdata, *_edata, *_sbss, *_ebss;
 void __attribute__((naked,noreturn)) Reset_Handler()
 {
-    __asm volatile ("cpsid i"); //turn off interrupts
+    //__asm volatile ("cpsid i"); //turn off interrupts
     void **i, **j;
     for(i=&_sidata,j=&_sdata;j!=&_edata;i++,j++)
     {

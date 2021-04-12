@@ -7,7 +7,7 @@
         {
             "name": "openocd",
             "cwd": "${workspaceRoot}",
-            "executable": "${workspaceRoot}/main.elf",
+            "executable": "${workspaceRoot}/build/main.elf",
             "request": "launch",
             "type": "cortex-debug",
             "servertype": "openocd",

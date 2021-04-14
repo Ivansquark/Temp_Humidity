@@ -12,7 +12,8 @@ public:
     static DHT22_interrupt* pThis;
      
     void setActiveIrq(void) {pThis=this;}
-    uint8_t getData();
+    uint8_t getData_DHT11();
+    uint8_t getData_DHT22();
     void init();
     uint8_t data[5] = {0};
     float temperature = 0;
@@ -24,7 +25,10 @@ private:
     uint32_t us_counter = 0;
     inline void pin_on() __attribute__((__always_inline__));
     inline void pin_off() __attribute__((__always_inline__));
-    inline bool isPinHigh() __attribute__((__always_inline__)) {return GPIOB->IDR & GPIO_IDR_IDR10;}
+    inline void pin_on_B0() __attribute__((__always_inline__));
+    inline void pin_off_B0() __attribute__((__always_inline__));
+    inline bool isPinB10High() __attribute__((__always_inline__)) {return GPIOB->IDR & GPIO_IDR_IDR10;}
+    inline bool isPinB0High() __attribute__((__always_inline__)) {return GPIOB->IDR & GPIO_IDR_IDR0;}
 };
 
 class DHT22_FR: public iTaskFR, DHT22_interrupt {
@@ -33,7 +37,7 @@ public:
     void run() override;
     QueueOS<float,2>* queue_float = nullptr;
 private:
-    void init();
+    //void init();
 };
 
 #endif //DHT22_H

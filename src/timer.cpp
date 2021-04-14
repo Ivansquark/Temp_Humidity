@@ -57,6 +57,6 @@ void TIM3_IRQHandler(void) {
 //! 1 us Period
 void TIM2_IRQHandler(void) {
     TIM2->SR&=~TIM_SR_UIF; //drop Update interrupt flag    
-    //InterruptManager::IsrVectors[TIM2_IRQn]();
-    Timer::pThis[2]->tim2 ++;
+    InterruptManager::IsrVectors[TIM2_IRQn]();
+    //Timer::pThis[2]->tim2 ++;
 }

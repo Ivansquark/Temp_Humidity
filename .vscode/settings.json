@@ -4,6 +4,8 @@
     "files.associations": {
         "cstdlib": "cpp",
         "stack_macros.h": "c",
-        "timers.h": "c"
+        "timers.h": "c",
+        "type_traits": "cpp",
+        "typeinfo": "cpp"
     }
 }

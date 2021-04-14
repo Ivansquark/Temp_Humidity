@@ -20,7 +20,7 @@ private:
         RCC->CFGR|=RCC_CFGR_PPRE2_DIV1; // APB2 clk SYSCLK делим на 1  (48MHz)
         switch (freq)
         {
-            case 72: RCC->CFGR|=RCC_CFGR_PLLMULL9; // 8MHz HSE * 6 = 48MHz SYSCLK;
+            case 72: RCC->CFGR|=RCC_CFGR_PLLMULL9; // 8MHz HSE * 9 = 72MHz SYSCLK;
             break;
             case 48: RCC->CFGR|=RCC_CFGR_PLLMULL6; // 8MHz HSE * 6 = 48MHz SYSCLK
             break;

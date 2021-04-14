@@ -24,12 +24,14 @@ private:
     uint32_t us_counter = 0;
     inline void pin_on() __attribute__((__always_inline__));
     inline void pin_off() __attribute__((__always_inline__));
-    inline bool isPinHigh() __attribute__((__always_inline__)) {return GPIOB->IDR & GPIO_IDR_IDR11;}
+    inline bool isPinHigh() __attribute__((__always_inline__)) {return GPIOB->IDR & GPIO_IDR_IDR10;}
 };
 
 class DHT22_FR: public iTaskFR, DHT22_interrupt {
 public:
+    DHT22_FR(QueueOS<float,2>* q = nullptr);
     void run() override;
+    QueueOS<float,2>* queue_float = nullptr;
 private:
     void init();
 };

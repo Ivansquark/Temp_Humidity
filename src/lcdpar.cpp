@@ -225,11 +225,11 @@ void LcdParIni::tft_ini() {
     send_command(0xB7); //entry mode set
     send_data(0x07);
     send_command(0x11);//Выйдем из спящего режима
-    delay(720000); //100 ms
+    delay(72000); //100 ms
     //Display ON
     send_command(0x29);//display on
     //send_data(TFT9341_ROTATION);        
-    delay(720000); //100 ms       
+    delay(72000); //100 ms       
     send_command(0x13);
 }
 
@@ -284,41 +284,49 @@ void Font_30x40::drawSymbol(uint16_t x, uint16_t y, const uint16_t* symbol) {
 void Font_30x40::drawString(uint16_t x, uint16_t y, bool red, const char* str) {
     if(red) {
         for(uint32_t i = 0; i<strlen(str); i++) {
-        if(str[i]=='0'){drawSymbol(x+i*30,y, image_data_temp_0x30_R);}
-        if(str[i]=='1'){drawSymbol(x+i*30,y, image_data_temp_0x31_R);}
-        if(str[i]=='2'){drawSymbol(x+i*30,y, image_data_temp_0x32_R);}
-        if(str[i]=='3'){drawSymbol(x+i*30,y, image_data_temp_0x33_R);}
-        if(str[i]=='4'){drawSymbol(x+i*30,y, image_data_temp_0x34_R);}
-        if(str[i]=='5'){drawSymbol(x+i*30,y, image_data_temp_0x35_R);}
-        if(str[i]=='6'){drawSymbol(x+i*30,y, image_data_temp_0x36_R);}
-        if(str[i]=='7'){drawSymbol(x+i*30,y, image_data_temp_0x37_R);}
-        if(str[i]=='8'){drawSymbol(x+i*30,y, image_data_temp_0x38_R);}
-        if(str[i]=='9'){drawSymbol(x+i*30,y, image_data_temp_0x39_R);}
-        if(str[i]=='.'){drawSymbol(x+i*30,y, image_data_temp_0x2e_R);}
-    }
-    } else {
+            if(str[i]=='0'){drawSymbol(x+i*30,y, image_data_temp_0x30_R);}
+            if(str[i]=='1'){drawSymbol(x+i*30,y, image_data_temp_0x31_R);}
+            if(str[i]=='2'){drawSymbol(x+i*30,y, image_data_temp_0x32_R);}
+            if(str[i]=='3'){drawSymbol(x+i*30,y, image_data_temp_0x33_R);}
+            if(str[i]=='4'){drawSymbol(x+i*30,y, image_data_temp_0x34_R);}
+            if(str[i]=='5'){drawSymbol(x+i*30,y, image_data_temp_0x35_R);}
+            if(str[i]=='6'){drawSymbol(x+i*30,y, image_data_temp_0x36_R);}
+            if(str[i]=='7'){drawSymbol(x+i*30,y, image_data_temp_0x37_R);}
+            if(str[i]=='8'){drawSymbol(x+i*30,y, image_data_temp_0x38_R);}
+            if(str[i]=='9'){drawSymbol(x+i*30,y, image_data_temp_0x39_R);}
+            if(str[i]=='.'){drawSymbol(x+i*30,y, image_data_temp_0x2e_R);}
+            if(str[i]==' '){drawSymbol(x+i*30,y, image_data_temp_0x00);}
+        }
+        } else {
         for(uint32_t i = 0; i<strlen(str); i++) {
-        if(str[i]=='0'){drawSymbol(x+i*30,y, image_data_temp_0x30_B);}
-        if(str[i]=='1'){drawSymbol(x+i*30,y, image_data_temp_0x31_B);}
-        if(str[i]=='2'){drawSymbol(x+i*30,y, image_data_temp_0x32_B);}
-        if(str[i]=='3'){drawSymbol(x+i*30,y, image_data_temp_0x33_B);}
-        if(str[i]=='4'){drawSymbol(x+i*30,y, image_data_temp_0x34_B);}
-        if(str[i]=='5'){drawSymbol(x+i*30,y, image_data_temp_0x35_B);}
-        if(str[i]=='6'){drawSymbol(x+i*30,y, image_data_temp_0x36_B);}
-        if(str[i]=='7'){drawSymbol(x+i*30,y, image_data_temp_0x37_B);}
-        if(str[i]=='8'){drawSymbol(x+i*30,y, image_data_temp_0x38_B);}
-        if(str[i]=='9'){drawSymbol(x+i*30,y, image_data_temp_0x39_B);}
-        if(str[i]=='.'){drawSymbol(x+i*30,y, image_data_temp_0x2e_B);}
-    }
+            if(str[i]=='0'){drawSymbol(x+i*30,y, image_data_temp_0x30_B);}
+            if(str[i]=='1'){drawSymbol(x+i*30,y, image_data_temp_0x31_B);}
+            if(str[i]=='2'){drawSymbol(x+i*30,y, image_data_temp_0x32_B);}
+            if(str[i]=='3'){drawSymbol(x+i*30,y, image_data_temp_0x33_B);}
+            if(str[i]=='4'){drawSymbol(x+i*30,y, image_data_temp_0x34_B);}
+            if(str[i]=='5'){drawSymbol(x+i*30,y, image_data_temp_0x35_B);}
+            if(str[i]=='6'){drawSymbol(x+i*30,y, image_data_temp_0x36_B);}
+            if(str[i]=='7'){drawSymbol(x+i*30,y, image_data_temp_0x37_B);}
+            if(str[i]=='8'){drawSymbol(x+i*30,y, image_data_temp_0x38_B);}
+            if(str[i]=='9'){drawSymbol(x+i*30,y, image_data_temp_0x39_B);}
+            if(str[i]=='.'){drawSymbol(x+i*30,y, image_data_temp_0x2e_B);}
+            if(str[i]==' '){drawSymbol(x+i*30,y, image_data_temp_0x00);}
+        }
     }    
 }
 void Font_30x40::drawTemperature() {
     floatToChar(temperature);
+    if(temperature<10) {
+        drawString(70,40,true,"    ");
+    }
     drawString(70,40,true,arrFloat);
     drawSymbol(240,40,image_data_temp_0x43_R);
 }
 void Font_30x40::drawHumidity() {
     floatToChar(humidity);
+    if(humidity<10) {
+        drawString(70,140,false,"    ");
+    }    
     drawString(70,140,false,arrFloat);
     drawSymbol(240,140,image_data_temp_0x25_B);
 }

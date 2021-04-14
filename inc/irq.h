@@ -41,7 +41,7 @@ public:
     InterruptSubject(){}
     static void IrqHandle()
     {
-        for(uint8_t i=0;i<10;i++)
+        for(uint8_t i=0;i<1;i++)
         {
             if(ArrOffInterrupteClasses[i]!=nullptr)
             {
@@ -52,7 +52,7 @@ public:
     static void SetVector(){InterruptManager::AddHandler(IrqHandle,irqN);}
     static void setInterrupt(Interruptable* pInterrupt)
     {
-        for(uint8_t i=0;i<10;i++)
+        for(uint8_t i=0;i<2;i++)
         {
             if(ArrOffInterrupteClasses[i]==nullptr)
             {
@@ -63,7 +63,7 @@ public:
     }
     static void removeInterrupt(Interruptable* pInterrupt)
     {
-        for(uint8_t i=0;i<10;i++)
+        for(uint8_t i=0;i<2;i++)
         {
             if(ArrOffInterrupteClasses[i]==pInterrupt)
             {
@@ -105,8 +105,7 @@ class Blink:public Interruptable
 public: 
     Blink(){led_ini();}
     ~Blink()override{}
-    void InterruptHandle() override
-    {
+    void InterruptHandle() override {
         toggle();
     }
     void toggle() {GPIOC->ODR^=GPIO_ODR_ODR13;}

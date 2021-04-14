@@ -28,4 +28,6 @@ extern const uint16_t image_data_temp_0x36_B[1200];
 extern const uint16_t image_data_temp_0x37_B[1200];
 extern const uint16_t image_data_temp_0x38_B[1200];
 extern const uint16_t image_data_temp_0x39_B[1200];
+
+extern const uint16_t image_data_temp_0x00[1200];
 #endif // TEMP_H

@@ -17,7 +17,7 @@ public:
     Timer(uint8_t timerNum);
     static Timer* pThis[4];    
     void delay_us(uint32_t us);
-    uint32_t tim2 = 0;
+    volatile uint32_t tim2 = 0;
 private:
     void timer_ini(uint8_t timerNum);
     uint32_t us_counter = 0;

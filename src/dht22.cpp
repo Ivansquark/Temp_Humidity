@@ -17,7 +17,7 @@ uint8_t DHT22_interrupt::getData_DHT11() {
     if(isPinB10High()) {
         return 0;
     }
-    timeout = 10000;
+    timeout = 100000;
     while (!isPinB10High() && timeout--); //wait for first answer
     if(!isPinB10High()) {
         return 0;
@@ -29,7 +29,7 @@ uint8_t DHT22_interrupt::getData_DHT11() {
         for(int i=0; i<8; i++) {
             timeout = 100000;
             while (!isPinB10High() && timeout--); //wait for start of bit receiving condition
-            delay_us(30);
+            delay_us(15);
             if(isPinB10High()) {
                 data[4-j] |= (1<<(7 - i));
                 timeout = 100000;
@@ -71,7 +71,7 @@ uint8_t DHT22_interrupt::getData_DHT22() {
         for(int i=0; i<8; i++) {
             timeout = 100000;
             while (!isPinB0High() && timeout--); //wait for start of bit receiving condition
-            delay_us(30);
+            delay_us(3);
             if(isPinB0High()) {
                 data[4-j] |= (1<<(7 - i));
                 timeout = 100000;
@@ -91,7 +91,7 @@ uint8_t DHT22_interrupt::getData_DHT22() {
     return 1;
 }
 
-void DHT22_interrupt::InterruptHandle() {
+volatile void DHT22_interrupt::InterruptHandle() {
     us_counter+=1; //very slow
 }
 
@@ -99,12 +99,12 @@ void DHT22_interrupt::InterruptHandle() {
 void DHT22_interrupt::delay_us(uint32_t us) {    
     us_counter = 0;
     Timer::pThis[2]->tim2 = 0;
-    //while(Timer::pThis[2]->tim2 < us) {
-    //    __ASM("nop");
-    //}   
-    while(us_counter < us) {
+    while(Timer::pThis[2]->tim2 < us) {
         __ASM("nop");
-    }      
+    }   
+    //while(us_counter < us) {
+    //    __ASM("nop");
+    //}      
 }
 
 void DHT22_interrupt::pin_on() {
@@ -144,12 +144,15 @@ DHT22_FR::DHT22_FR(QueueOS<float,2>* q) {
 }
 
 void DHT22_FR::run() {
-    InterruptSubject<TIM2_IRQn> us;
+    //InterruptManager interMan;
+    //volatile InterruptSubject<TIM2_IRQn> us;
     __disable_irq();
     Timer tim_us(2);
     DHT22_interrupt dht_i;
-    __enable_irq();
+    //us.setInterrupt(&dht_i);
+    //us.SetVector();    
     OS::scheduler_suspend();
+    __enable_irq();
     dht_i.init();
     OS::scheduler_resume();    
     while(1) {

@@ -19,7 +19,7 @@ public:
     float temperature = 0;
     float humidity = 0;
 private:
-    void InterruptHandle();
+    volatile void InterruptHandle();
     void delay_us(uint32_t us);
     void receiving_init();
     uint32_t us_counter = 0;

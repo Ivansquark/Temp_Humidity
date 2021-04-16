@@ -8,7 +8,7 @@ DHT22_interrupt::DHT22_interrupt() {
 
 uint8_t DHT22_interrupt::getData_DHT11() {
     pin_off(); 
-    delay_us(18000);
+    delay_us(8000);
     pin_on();
     volatile uint32_t timeout = 0;
     //delay_us(40); // wait for answer
@@ -17,7 +17,7 @@ uint8_t DHT22_interrupt::getData_DHT11() {
     if(isPinB10High()) {
         return 0;
     }
-    timeout = 100000;
+    timeout = 10000;
     while (!isPinB10High() && timeout--); //wait for first answer
     if(!isPinB10High()) {
         return 0;
@@ -27,12 +27,12 @@ uint8_t DHT22_interrupt::getData_DHT11() {
     for(int j=0;j<5;j++) {
         data[4-j]=0;
         for(int i=0; i<8; i++) {
-            timeout = 100000;
+            timeout = 10000;
             while (!isPinB10High() && timeout--); //wait for start of bit receiving condition
-            delay_us(15);
+            delay_us(20);
             if(isPinB10High()) {
                 data[4-j] |= (1<<(7 - i));
-                timeout = 100000;
+                timeout = 10000;
                 while (isPinB10High() && timeout--); //wait for end of bit
             }            
         }
@@ -51,7 +51,7 @@ uint8_t DHT22_interrupt::getData_DHT11() {
 
 uint8_t DHT22_interrupt::getData_DHT22() {
     pin_on_B0(); 
-    delay_us(18000);
+    delay_us(8000);
     pin_on_B0();
     volatile uint32_t timeout = 0;
     timeout = 10000;
@@ -69,12 +69,12 @@ uint8_t DHT22_interrupt::getData_DHT22() {
     for(int j=0;j<5;j++) {
         data[4-j]=0;
         for(int i=0; i<8; i++) {
-            timeout = 100000;
+            timeout = 10000;
             while (!isPinB0High() && timeout--); //wait for start of bit receiving condition
-            delay_us(3);
+            delay_us(20);
             if(isPinB0High()) {
                 data[4-j] |= (1<<(7 - i));
-                timeout = 100000;
+                timeout = 10000;
                 while (isPinB0High() && timeout--); //wait for end of bit
             }            
         }
@@ -99,12 +99,12 @@ volatile void DHT22_interrupt::InterruptHandle() {
 void DHT22_interrupt::delay_us(uint32_t us) {    
     us_counter = 0;
     Timer::pThis[2]->tim2 = 0;
-    while(Timer::pThis[2]->tim2 < us) {
-        __ASM("nop");
-    }   
-    //while(us_counter < us) {
+    //while(Timer::pThis[2]->tim2 < us) {
     //    __ASM("nop");
-    //}      
+    //}   
+    while(us_counter < us) {
+        __ASM("nop");
+    }      
 }
 
 void DHT22_interrupt::pin_on() {
@@ -145,12 +145,12 @@ DHT22_FR::DHT22_FR(QueueOS<float,2>* q) {
 
 void DHT22_FR::run() {
     //InterruptManager interMan;
-    //volatile InterruptSubject<TIM2_IRQn> us;
+    volatile InterruptSubject<TIM2_IRQn> us;
     __disable_irq();
     Timer tim_us(2);
     DHT22_interrupt dht_i;
-    //us.setInterrupt(&dht_i);
-    //us.SetVector();    
+    us.setInterrupt(&dht_i);
+    us.SetVector();    
     OS::scheduler_suspend();
     __enable_irq();
     dht_i.init();
@@ -165,6 +165,6 @@ void DHT22_FR::run() {
             queue_float->queueFrom(dht_i.humidity,1);
         }        
         OS::scheduler_resume();
-        OS::sleep(1000);
+        OS::sleep(100);
     } 
 }

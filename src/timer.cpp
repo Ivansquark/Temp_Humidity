@@ -1,6 +1,6 @@
 #include "timer.h"
 
-Timer* Timer::pThis[] = {nullptr};
+volatile Timer* Timer::pThis[] = {nullptr};
 Timer::Timer(uint8_t timerNum) {
     timer_ini(timerNum);
     pThis[timerNum] = this;
@@ -18,7 +18,7 @@ void Timer::timer_ini(uint8_t timerNum) {
         case 2:
             RCC->APB1ENR|=RCC_APB1ENR_TIM2EN;
             TIM2->PSC = 0;// TIM clk = 72000000  (clk APB1*2) => 72 MHz
-            TIM2->ARR = 36; //1 us
+            TIM2->ARR = 72; //1 us
             TIM2->DIER |= TIM_DIER_UIE; //interrupt at overload 
             TIM2->CR1 |= TIM_CR1_CEN;
             NVIC_SetPriority(TIM2_IRQn,0);
@@ -57,6 +57,6 @@ void TIM3_IRQHandler(void) {
 //! 1 us Period
 void TIM2_IRQHandler(void) {
     TIM2->SR&=~TIM_SR_UIF; //drop Update interrupt flag    
-    //InterruptManager::IsrVectors[TIM2_IRQn]();
-    Timer::pThis[2]->tim2 ++;
+    InterruptManager::IsrVectors[TIM2_IRQn]();
+    //Timer::pThis[2]->tim2 ++;
 }

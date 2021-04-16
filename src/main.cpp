@@ -26,7 +26,7 @@ public:
 			font.drawTemperature();
 			font.setHumidity(hum);
 			font.drawHumidity();
-			OS::sleep(500);
+			OS::sleep(250);
 		}
 	}
 };

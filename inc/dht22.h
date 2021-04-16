@@ -22,7 +22,7 @@ private:
     volatile void InterruptHandle();
     void delay_us(uint32_t us);
     void receiving_init();
-    uint32_t us_counter = 0;
+    volatile uint32_t us_counter = 0;
     inline void pin_on() __attribute__((__always_inline__));
     inline void pin_off() __attribute__((__always_inline__));
     inline void pin_on_B0() __attribute__((__always_inline__));

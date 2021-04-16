@@ -14,12 +14,12 @@ BLD = build/
 FRS = freeRTOS/src/
 FRH = freeRTOS/inc/
 
-CPPFLAGS = -c -g -O0 -Wall -nostartfiles -lstdc++ \
+CPPFLAGS = -c -g -O2 -Wall -nostartfiles -lstdc++ \
 	-mcpu=cortex-m3 -mthumb -march=armv7-m -Wno-pointer-arith -mfloat-abi=soft \
 	-u_printf_float -ffast-math -fno-math-errno -ffunction-sections -fdata-sections \
 	-fno-rtti -fno-exceptions -specs=nosys.specs -specs=nano.specs -fno-common -D"assert_param(x)=" \
 	-L/usr/lib/arm-none-eabi/newlib/ 
-CFLAGS = -Wall -g -O0 -specs=nosys.specs -specs=nano.specs \
+CFLAGS = -Wall -g -O2 -specs=nosys.specs -specs=nano.specs \
 	 -c -fno-common -mcpu=cortex-m3 -mthumb -mfloat-abi=soft -Wno-pointer-arith 
 LCPPFLAGS = -mcpu=cortex-m3 -mthumb -nostartfiles -lm -lc -lgcc \
 		 -specs=nano.specs -specs=nosys.specs -fno-exceptions -fno-rtti \
